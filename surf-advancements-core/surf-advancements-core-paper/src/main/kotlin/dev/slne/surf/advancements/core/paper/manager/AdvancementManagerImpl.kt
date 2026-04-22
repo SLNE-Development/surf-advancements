@@ -6,8 +6,7 @@ import dev.slne.surf.api.core.util.mutableObjectSetOf
 import dev.slne.surf.advancements.api.common.InternalAdvancementApi
 import dev.slne.surf.advancements.api.paper.Advancement
 import dev.slne.surf.advancements.api.paper.manager.AdvancementManager
-import dev.slne.surf.advancements.api.paper.advancements.*
-import net.kyori.adventure.util.Services
+import dev.slne.surf.advancements.api.paper.advancements.*import net.kyori.adventure.util.Services
 import kotlin.reflect.KClass
 
 @AutoService(AdvancementManager::class)
@@ -18,6 +17,7 @@ class AdvancementManagerImpl : AdvancementManager, Services.Fallback {
 
     fun registerAllAdvancements() {
         registerAdvancement(PlaytimeAdvancement)
+        registerAdvancement(MiningAdvancement)
     }
 
     fun registerListeners() {
