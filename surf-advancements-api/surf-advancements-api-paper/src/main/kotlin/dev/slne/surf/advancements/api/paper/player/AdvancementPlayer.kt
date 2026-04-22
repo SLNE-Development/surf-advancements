@@ -25,7 +25,7 @@ interface AdvancementPlayer {
     fun <S : Advancement> incrementExperience(clazz: KClass<out S>, amount: Int)
 }
 
-suspend fun Player.skillPlayer() = AdvancementPlayerManager.fetchOrCreatePlayer(uniqueId)
+suspend fun Player.advancementPlayer() = AdvancementPlayerManager.fetchOrCreatePlayer(uniqueId)
 
 inline fun <reified S : Advancement> AdvancementPlayer.hasLevel(level: Int): Boolean =
     hasLevel(S::class, level)

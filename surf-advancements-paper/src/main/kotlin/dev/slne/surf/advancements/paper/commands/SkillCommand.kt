@@ -18,17 +18,17 @@ import dev.slne.surf.advancements.paper.utils.AdvancementPermissions
 import kotlinx.coroutines.withContext
 import org.bukkit.Bukkit
 
-fun advancementCommand() = commandTree("skill") {
-    withPermission(AdvancementPermissions.COMMAND_SKILL)
+fun advancementCommand() = commandTree("advancement") {
+    withPermission(AdvancementPermissions.COMMAND_ADVANCEMENT)
 
     playerExecutor { player, _ ->
         plugin.launch {
-            val skillPlayer = AdvancementPlayerManager.fetchOrCreatePlayer(player.uniqueId)
+            val advancementPlayer = AdvancementPlayerManager.fetchOrCreatePlayer(player.uniqueId)
 
             withContext(plugin.globalRegionDispatcher) {
                 advancementsView.open(
                     player, mapOf(
-                        "advancement_progress" to skillPlayer.experiences,
+                        "advancement_progress" to advancementPlayer.experiences,
                         "player_uuid" to player.uniqueId
                     )
                 )
@@ -50,12 +50,12 @@ fun advancementCommand() = commandTree("skill") {
                 return@playerExecutorSuspend
             }
 
-            val skillPlayer = AdvancementPlayerManager.fetchOrCreatePlayer(target.uniqueId)
+            val advancementPlayer = AdvancementPlayerManager.fetchOrCreatePlayer(target.uniqueId)
 
             withContext(plugin.globalRegionDispatcher) {
                 advancementsView.open(
                     player, mapOf(
-                        "advancement_progress" to skillPlayer.experiences,
+                        "advancement_progress" to advancementPlayer.experiences,
                         "player_uuid" to target.uniqueId
                     )
                 )

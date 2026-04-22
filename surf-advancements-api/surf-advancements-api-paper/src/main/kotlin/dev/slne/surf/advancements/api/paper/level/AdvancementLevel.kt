@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Unmodifiable
 interface AdvancementLevel {
     val advancement: Advancement
     val level: Int
+    val requiredExperience: Int
 
     val description: (LoreBuilder.() -> Unit)?
     fun buildLore(experience: AdvancementExperience): ObjectList<Component>

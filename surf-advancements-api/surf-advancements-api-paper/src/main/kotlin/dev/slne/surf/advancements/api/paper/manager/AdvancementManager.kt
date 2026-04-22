@@ -15,7 +15,7 @@ interface AdvancementManager {
     fun unregisterAdvancement(advancement: Advancement): Boolean
 
     fun getAdvancementByName(name: String): Advancement?
-    fun <T : Advancement> getAdvancement(skillClazz: KClass<out T>): T?
+    fun <T : Advancement> getAdvancement(advancementClazz: KClass<out T>): T?
 
     companion object : AdvancementManager by advancementManager {
         val INSTANCE get() = advancementManager

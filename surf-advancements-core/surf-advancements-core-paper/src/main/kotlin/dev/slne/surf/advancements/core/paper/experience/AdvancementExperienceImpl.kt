@@ -14,7 +14,9 @@ data class AdvancementExperienceImpl(
     override var currentExperience: Int,
 ) : AdvancementExperience {
     override val currentLevel: Int
-        get() = advancement.experienceCurve.getLevelForExperience(currentExperience)
+        get() = advancement.getLevels()
+            .filter { currentExperience >= it.requiredExperience }
+            .maxOfOrNull { it.level } ?: 0
 
     override fun checkLevel(level: Int): LevelState {
         val currentLevel = currentLevel
@@ -33,7 +35,7 @@ data class AdvancementExperienceImpl(
 
         if (beforeAdding != afterAdding) {
             AdvancementInstance.launch {
-                advancement.awardLevelUpRewards(uuid, beforeAdding)
+                advancement.awardLevelUpRewards(uuid, afterAdding)
             }
         }
 

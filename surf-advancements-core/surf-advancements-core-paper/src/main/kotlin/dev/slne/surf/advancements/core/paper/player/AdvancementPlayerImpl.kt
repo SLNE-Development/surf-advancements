@@ -44,17 +44,16 @@ class AdvancementPlayerImpl(
         val old = findExperience(clazz)
         if (old != null) return old
 
-        val skill = AdvancementManager.getAdvancement(clazz)
-            ?: error("Trying to access unregistered skill ${clazz.simpleName ?: "Unknown Skill Class"}")
+        val advancement = AdvancementManager.getAdvancement(clazz)
+            ?: error("Trying to access unregistered advancement ${clazz.simpleName ?: "Unknown Advancement Class"}")
 
         val new = AdvancementExperienceImpl(
             uuid = uuid,
-            advancement = skill,
+            advancement = advancement,
             currentExperience = 0
         )
 
         _experiences.add(new)
-
         return new
     }
 

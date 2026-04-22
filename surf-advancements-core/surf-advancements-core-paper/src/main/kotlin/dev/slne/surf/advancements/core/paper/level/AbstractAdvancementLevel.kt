@@ -10,7 +10,6 @@ import dev.slne.surf.advancements.api.paper.Advancement
 import dev.slne.surf.advancements.api.paper.experience.AdvancementExperience
 import dev.slne.surf.advancements.api.paper.level.AdvancementLevel
 import dev.slne.surf.advancements.api.paper.level.reward.LevelReward
-import dev.slne.surf.advancements.core.paper.AbstractAdvancement
 import dev.slne.surf.advancements.core.paper.level.explanation.ExplanationLoreBuilder
 import dev.slne.surf.advancements.core.paper.level.explanation.PerLevelExplanationLoreBuilder
 import it.unimi.dsi.fastutil.objects.ObjectList
@@ -20,11 +19,13 @@ import org.bukkit.entity.Player
 fun advancementLevel(
     advancement: Advancement,
     level: Int,
+    requiredExperience: Int,
     rewards: ObjectList<LevelReward>.() -> Unit = {},
     description: (LoreBuilder.() -> Unit)? = null,
 ) = object : AbstractAdvancementLevel(
     advancement = advancement,
     level = level,
+    requiredExperience = requiredExperience,
     description = description,
 ) {
     override fun buildRewards(): ObjectList<LevelReward> {
@@ -35,6 +36,7 @@ fun advancementLevel(
 open class AbstractAdvancementLevel(
     override val advancement: Advancement,
     override val level: Int,
+    override val requiredExperience: Int,
     override val description: (LoreBuilder.() -> Unit)? = null,
 ) : AdvancementLevel {
     private val _rewards = buildRewards()
@@ -47,7 +49,6 @@ open class AbstractAdvancementLevel(
             buildLevelExplanationLore(experience)
             buildRewardLore()
             emptyLine()
-            buildAbilityLore()
         }.build().toObjectList()
     }
 
@@ -90,42 +91,6 @@ open class AbstractAdvancementLevel(
         }
     }
 
-    private fun LoreBuilder.buildAbilityLore() {
-        val skill = advancement as? AbstractAdvancement ?: return
-        val activeAbilities = skill.abilities.filter { it.isActiveAtLevel(level) }
-
-        if (activeAbilities.isEmpty()) {
-            return
-        }
-
-        line {
-            primary("Fähigkeiten:".toSmallCaps())
-        }
-        emptyLine()
-
-        activeAbilities.forEach { ability ->
-            val newValue = ability.getFormattedValue(level)
-            val isNew = !ability.isActiveAtLevel(level - 1)
-
-            line {
-                spacer("- ")
-                append(ability.displayName)
-                info(": ")
-
-                if (isNew) {
-                    variableValue(newValue)
-                    spacer(" (")
-                    variableValue("NEU!")
-                    spacer(")")
-                } else {
-                    val oldValue = ability.getFormattedValue(level - 1)
-                    spacer(oldValue)
-                    info(" → ")
-                    variableValue(newValue)
-                }
-            }
-        }
-    }
 
     open fun buildRewards(): ObjectList<LevelReward> {
         return objectListOf()

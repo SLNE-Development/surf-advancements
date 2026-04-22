@@ -17,14 +17,7 @@ class AdvancementManagerImpl : AdvancementManager, Services.Fallback {
     override val advancements get() = _advancements.freeze()
 
     fun registerAllAdvancements() {
-        registerAdvancement(AlchemySkill)
-        registerAdvancement(CombatSkill)
-        registerAdvancement(EnchantingSkill)
-        registerAdvancement(FishingSkill)
-        registerAdvancement(ExplorationSkill)
-        registerAdvancement(ForagingSkill)
-        registerAdvancement(MiningSkill)
-        registerAdvancement(WoodcuttingSkill)
+        registerAdvancement(PlaytimeAdvancement)
     }
 
     fun registerListeners() {
@@ -43,8 +36,8 @@ class AdvancementManagerImpl : AdvancementManager, Services.Fallback {
         _advancements.firstOrNull { it.name.equals(name, true) }
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T : Advancement> getAdvancement(skillClazz: KClass<out T>) =
-        _advancements.firstOrNull { skillClazz.isInstance(it) } as? T
+    override fun <T : Advancement> getAdvancement(advancementClazz: KClass<out T>) =
+        _advancements.firstOrNull { advancementClazz.isInstance(it) } as? T
 }
 
 val advancementManagerImpl get() = AdvancementManager.INSTANCE as AdvancementManagerImpl

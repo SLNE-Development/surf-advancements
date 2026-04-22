@@ -13,13 +13,16 @@ import dev.slne.surf.api.paper.event.register
 import dev.slne.surf.api.paper.extensions.server
 import dev.slne.surf.api.paper.util.BukkitSound
 import dev.slne.surf.advancements.api.common.InternalAdvancementApi
-import dev.slne.surf.advancements.api.common.curve.curves.ExponentialExperienceCurve
 import dev.slne.surf.advancements.api.paper.Advancement
 import dev.slne.surf.advancements.api.paper.AdvancementInstance
 import dev.slne.surf.advancements.api.paper.experience.AdvancementExperience
 import dev.slne.surf.advancements.api.paper.level.AdvancementLevel
-import dev.slne.surf.advancements.core.paper.ability.AdvancementAbility
-import dev.slne.surf.advancements.core.paper.level.EmptyAdvancementLevel
+import dev.slne.surf.api.paper.nms.NmsUseWithCaution
+import dev.slne.surf.api.paper.nms.SurfPaperNmsBridge
+import dev.slne.surf.api.paper.nms.bridges.packets.player.SurfPaperNmsPlayerToastPackets
+import dev.slne.surf.api.paper.nms.bridges.packets.player.toast.Toast
+import dev.slne.surf.api.paper.nms.bridges.packets.player.toast.toast
+import io.papermc.paper.advancement.AdvancementDisplay
 import it.unimi.dsi.fastutil.objects.ObjectList
 import kotlinx.coroutines.withContext
 import net.kyori.adventure.sound.Sound
@@ -35,21 +38,13 @@ abstract class AbstractAdvancement(
     override val material: ItemType,
     override val displayName: Component,
     override val lore: LoreBuilder.() -> Unit,
-    override val baseExperience: Int = Advancement.BASE_EXPERIENCE,
-    override val maxLevel: Int = Advancement.MAX_ADVANCEMENT_LEVEL,
-    override val maxExperience: Int = Advancement.MAX_EXPERIENCE,
     override val active: Boolean = true,
     listeners: ObjectList<Listener> = objectListOf(),
-    val abilities: ObjectList<AdvancementAbility> = objectListOf()
 ) : Advancement {
     private val _listeners = mutableObjectListOf<Listener>(listeners)
     override val listeners get() = _listeners.freeze()
 
-    override val experienceCurve = ExponentialExperienceCurve(
-        maxLevel = maxLevel,
-        maxExperience = maxExperience,
-        baseExperience = baseExperience
-    )
+    val maxLevel: Int get() = getLevels().size
 
     open fun getExtraLevels(): ObjectList<AdvancementLevel> {
         return objectListOf()
@@ -58,8 +53,6 @@ abstract class AbstractAdvancement(
     override suspend fun awardLevelUpRewards(uuid: UUID, level: Int) {
         val player = server.getPlayer(uuid) ?: return
         val levelRewards = getLevels().firstOrNull { it.level == level }?.rewards ?: objectListOf()
-
-        val activeAbilities = abilities.filter { it.isActiveAtLevel(level) }
 
         player.sendText {
             appendInfoPrefix()
@@ -75,34 +68,6 @@ abstract class AbstractAdvancement(
             info(" in ")
             append(displayName)
             info(" erreicht!")
-
-            if (activeAbilities.isNotEmpty()) {
-                appendNewInfoPrefixedLine()
-                appendNewInfoPrefixedLine()
-                info("Fähigkeiten:")
-
-                activeAbilities.forEach { ability ->
-                    val newValue = ability.getFormattedValue(level)
-                    val isNew = !ability.isActiveAtLevel(level - 1)
-
-                    appendNewInfoPrefixedLine()
-                    info("  - ")
-                    append(ability.displayName)
-                    info(": ")
-
-                    if (isNew) {
-                        variableValue(newValue)
-                        spacer(" (")
-                        variableValue("NEU!")
-                        spacer(")")
-                    } else {
-                        val oldValue = ability.getFormattedValue(level - 1)
-                        spacer(oldValue)
-                        info(" → ")
-                        variableValue(newValue)
-                    }
-                }
-            }
 
             if (levelRewards.isNotEmpty()) {
                 appendNewInfoPrefixedLine()
@@ -143,6 +108,20 @@ abstract class AbstractAdvancement(
             volume(.5f)
         }
 
+        val toast = toast {
+            icon(material)
+            title {
+                append(displayName)
+                appendNewline()
+                info("Level ")
+                variableValue(level)
+            }
+
+            frame(AdvancementDisplay.Frame.TASK)
+        }
+
+        @OptIn(NmsUseWithCaution::class)
+        toast.createOperation().execute(player)
 
         if (levelRewards.isEmpty()) {
             return
@@ -153,27 +132,12 @@ abstract class AbstractAdvancement(
         }
     }
 
-    override fun getLevels(): ObjectList<AdvancementLevel> {
-        val levels = mutableObjectListOf<AdvancementLevel>()
-        val extra = getExtraLevels()
-
-        for (level in 1..maxLevel) {
-            val skillLevel = extra.firstOrNull { it.level == level } ?: EmptyAdvancementLevel(
-                advancement = this,
-                level = level
-            )
-
-            levels.add(skillLevel)
-        }
-
-        return levels
-    }
+    override fun getLevels(): ObjectList<AdvancementLevel> = getExtraLevels()
 
     override fun displayItemStack(progress: AdvancementExperience) = buildItem(material) {
         displayName(displayName)
 
-        val experience = progress.currentExperience
-        val currentLevel = experienceCurve.getLevelForExperience(experience)
+        val currentLevel = progress.currentLevel
 
         buildLore {
             this@AbstractAdvancement.lore(this)
@@ -181,34 +145,7 @@ abstract class AbstractAdvancement(
 
             line {
                 variableKey("Level: ")
-                variableValue(currentLevel - 1)
-            }
-
-            if (abilities.isNotEmpty()) {
-                emptyLine()
-                line { variableKey("Fähigkeiten:") }
-
-                abilities.forEach { ability ->
-                    val isUnlocked = ability.isActiveAtLevel(currentLevel - 1)
-                    emptyLine()
-                    line {
-                        if (isUnlocked) success("✔ ")
-                        else error("✘ ")
-                        append(ability.displayName)
-                        spacer(" (ab Lvl. ${ability.minLevel})")
-                    }
-                    if (ability.description.isNotEmpty()) {
-                        line {
-                            spacer("  ${ability.description}")
-                        }
-                    }
-                    if (isUnlocked) {
-                        line {
-                            spacer("  Aktuell: ")
-                            variableValue(ability.getFormattedValue(currentLevel - 1))
-                        }
-                    }
-                }
+                variableValue(currentLevel)
             }
 
             if (!active) {

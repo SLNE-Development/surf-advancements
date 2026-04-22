@@ -9,31 +9,24 @@ object GlobalXPWithPerLevelBarLoreBuilder : ExplanationLoreBuilder {
         level: Int,
         amountOfBars: Int
     ) {
-        val skill = experience.advancement
+        val levels = experience.advancement.getLevels()
         val currentLevel = experience.currentLevel
 
-        val xpForPreviousLevels = if (level > 1) {
-            skill.experienceCurve.getTotalExperienceForLevel(level - 1)
-        } else {
-            0
-        }
-        val currentLevelXp = skill.experienceCurve.getExperienceForLevel(level)
+        val thisLevelReqXp = levels.find { it.level == level }?.requiredExperience ?: 0
+        val prevLevelReqXp = levels.find { it.level == level - 1 }?.requiredExperience ?: 0
+        val xpForThisLevel = (thisLevelReqXp - prevLevelReqXp).coerceAtLeast(1)
 
         val xpIntoLevel = when {
-            currentLevel > level -> currentLevelXp
-            currentLevel == level -> (experience.currentExperience - xpForPreviousLevels).coerceAtLeast(
-                0
-            )
-
+            currentLevel > level -> xpForThisLevel
+            currentLevel == level -> (experience.currentExperience - prevLevelReqXp).coerceAtLeast(0)
             else -> 0
         }
 
-        appendExperienceLine(xpIntoLevel, currentLevelXp)
+        appendExperienceLine(xpIntoLevel, xpForThisLevel)
 
         appendProgressBar(
-            (xpIntoLevel.toDouble() / currentLevelXp.toDouble() * amountOfBars).toInt()
-                .coerceIn(0, amountOfBars),
-            (xpIntoLevel.toDouble() / currentLevelXp * 100).toInt(),
+            (xpIntoLevel.toDouble() / xpForThisLevel * amountOfBars).toInt().coerceIn(0, amountOfBars),
+            (xpIntoLevel.toDouble() / xpForThisLevel * 100).toInt(),
             amountOfBars
         )
     }

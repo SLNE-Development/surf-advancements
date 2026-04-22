@@ -52,37 +52,37 @@ val advancementsView = surfView("Advancements") {
         }
     }
 
-    fun <S : Advancement> RenderContext.buildSkillItem(
-        skill: S,
+    fun <S : Advancement> RenderContext.buildAdvancementItem(
+        advancement: S,
     ): Pair<AdvancementExperience, ItemStack> {
         val playerUuid = playerUuidState[this]
 
-        val skillProgresses = advancementExperienceState[this]
-        val skillProgressWithSkill =
-            skillProgresses.firstOrNull { skill.javaClass.isInstance(it.advancement) }
+        val advancementProgress = advancementExperienceState[this]
+        val advancementProgresWithAdvancement =
+            advancementProgress.firstOrNull { advancement.javaClass.isInstance(it.advancement) }
                 ?: run {
                     AdvancementExperienceImpl(
                         uuid = playerUuid,
-                        advancement = skill,
+                        advancement = advancement,
                         currentExperience = 0
                     )
                 }
 
-        return skillProgressWithSkill to skillProgressWithSkill.advancement.displayItemStack(
-            skillProgressWithSkill
+        return advancementProgresWithAdvancement to advancementProgresWithAdvancement.advancement.displayItemStack(
+            advancementProgresWithAdvancement
         )
     }
 
     fun <S : Advancement> RenderContext.renderSlot(
-        skillClass: KClass<S>,
+        advancementClass: KClass<S>,
         slot: Char,
     ) {
-        val skill = AdvancementManager.getAdvancement(skillClass) ?: return
-        val skillItem = buildSkillItem(skill)
+        val advancement = AdvancementManager.getAdvancement(advancementClass) ?: return
+        val advancementItem = buildAdvancementItem(advancement)
 
-        layoutSlot(slot, skillItem.second)
+        layoutSlot(slot, advancementItem.second)
             .onItemClick {
-                openForPlayer(advancementView, mapOf("advancement_progress" to skillItem.first))
+                openForPlayer(advancementView, mapOf("advancement_progress" to advancementItem.first))
             }
     }
 

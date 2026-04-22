@@ -13,7 +13,6 @@ import dev.slne.surf.api.paper.inventory.framework.view.pagination.pagination
 import dev.slne.surf.api.paper.inventory.framework.view.settings.PaginationViewRows
 import dev.slne.surf.api.paper.inventory.framework.view.state.get
 import dev.slne.surf.api.paper.inventory.framework.view.state.initialState
-import dev.slne.surf.advancements.api.paper.Advancement
 import dev.slne.surf.advancements.api.paper.experience.AdvancementExperience
 import io.papermc.paper.datacomponent.DataComponentTypes
 
@@ -40,7 +39,7 @@ val advancementView = paginatedSurfView("aaa") {
 
                 lore(level.buildLore(state))
 
-                setData(DataComponentTypes.MAX_STACK_SIZE, Advancement.MAX_ADVANCEMENT_LEVEL)
+                setData(DataComponentTypes.MAX_STACK_SIZE, state.advancement.getLevels().size.coerceAtLeast(1))
             }.onItemClick {
                 // OPEN LEVEL INFO PAGE
             }

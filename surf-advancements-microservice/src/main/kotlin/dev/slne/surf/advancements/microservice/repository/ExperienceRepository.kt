@@ -17,12 +17,12 @@ object ExperienceRepository {
         AdvancementExperienceTable.selectAll()
             .where { AdvancementExperienceTable.uuid eq uuid }
             .mapNotNull {
-                val skillName = it[AdvancementExperienceTable.advancementName]
+                val advancementName = it[AdvancementExperienceTable.advancementName]
                 val experience = it[AdvancementExperienceTable.experience]
 
                 SimpleExperience(
                     uuid = uuid,
-                    advancementName = skillName,
+                    advancementName = advancementName,
                     currentExperience = experience,
                 )
             }.toList().toMutableObjectList()
@@ -30,14 +30,14 @@ object ExperienceRepository {
 
     suspend fun saveExperience(
         uuid: UUID,
-        skillExperience: SimpleExperience
+        advancementExperience: SimpleExperience
     ) = suspendTransaction {
-        val skillName = skillExperience.advancementName
-        val experience = skillExperience.currentExperience
+        val advancementName = advancementExperience.advancementName
+        val experience = advancementExperience.currentExperience
 
         AdvancementExperienceTable.upsert {
             it[AdvancementExperienceTable.uuid] = uuid
-            it[AdvancementExperienceTable.advancementName] = skillName
+            it[AdvancementExperienceTable.advancementName] = advancementName
             it[AdvancementExperienceTable.experience] = experience
         }
 
