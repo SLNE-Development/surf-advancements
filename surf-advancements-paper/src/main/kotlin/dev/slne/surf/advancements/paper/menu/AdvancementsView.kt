@@ -95,7 +95,7 @@ val advancementsView = surfView("Advancements") {
             })
         }
 
-        renderSlot(PlaytimeAdvancement::class, 'M')
+        renderSlot(ExampleAdvancement::class, 'M')
 
         layoutSlot('X', viewIcon(ViewIconType.CROSS, ViewIconColor.RED) {
             displayName {

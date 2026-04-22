@@ -16,8 +16,7 @@ class AdvancementManagerImpl : AdvancementManager, Services.Fallback {
     override val advancements get() = _advancements.freeze()
 
     fun registerAllAdvancements() {
-        registerAdvancement(PlaytimeAdvancement)
-        registerAdvancement(MiningAdvancement)
+        registerAdvancement(ExampleAdvancement)
     }
 
     fun registerListeners() {

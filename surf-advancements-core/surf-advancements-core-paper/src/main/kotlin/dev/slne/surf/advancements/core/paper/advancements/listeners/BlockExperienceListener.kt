@@ -1,8 +1,7 @@
 package dev.slne.surf.advancements.core.paper.advancements.listeners
 
 import com.github.shynixn.mccoroutine.folia.launch
-import dev.slne.surf.advancements.api.paper.advancements.MiningAdvancement
-import dev.slne.surf.advancements.api.paper.player.AdvancementPlayerManager
+import dev.slne.surf.advancements.api.paper.advancements.ExampleAdvancement
 import dev.slne.surf.advancements.api.paper.player.advancementPlayer
 import dev.slne.surf.advancements.api.paper.player.incrementExperience
 import org.bukkit.Material
@@ -59,7 +58,7 @@ object BlockExperienceListener : Listener {
         val plugin = JavaPlugin.getProvidingPlugin(BlockExperienceListener::class.java)
 
         plugin.launch {
-            player.advancementPlayer().incrementExperience<MiningAdvancement>(xp)
+            player.advancementPlayer().incrementExperience<ExampleAdvancement>(xp)
         }
     }
 }

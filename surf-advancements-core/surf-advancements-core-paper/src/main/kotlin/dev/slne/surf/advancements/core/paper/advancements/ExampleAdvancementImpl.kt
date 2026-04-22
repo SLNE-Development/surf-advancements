@@ -3,7 +3,7 @@ package dev.slne.surf.advancements.core.paper.advancements
 import com.google.auto.service.AutoService
 import dev.slne.surf.api.core.messages.adventure.buildText
 import dev.slne.surf.api.core.util.objectListOf
-import dev.slne.surf.advancements.api.paper.advancements.MiningAdvancement
+import dev.slne.surf.advancements.api.paper.advancements.ExampleAdvancement
 import dev.slne.surf.advancements.api.paper.level.AdvancementLevel
 import dev.slne.surf.advancements.api.paper.level.reward.rewards.LevelItemRewards
 import dev.slne.surf.advancements.core.paper.AbstractAdvancement
@@ -13,15 +13,15 @@ import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.ItemType
 
-@AutoService(MiningAdvancement::class)
-object MiningAdvancementImpl : AbstractAdvancement(
+@AutoService(ExampleAdvancement::class)
+object ExampleAdvancementImpl : AbstractAdvancement(
     name = "mining",
     material = ItemType.IRON_PICKAXE,
     displayName = buildText { primary("Bergbau") },
     lore = {
         line { spacer("Baue Blöcke ab, um XP zu verdienen.") }
     },
-), MiningAdvancement {
+), ExampleAdvancement {
 
     override fun getExtraLevels(): ObjectList<AdvancementLevel> = objectListOf(
 
