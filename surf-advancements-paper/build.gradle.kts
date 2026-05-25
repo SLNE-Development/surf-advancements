@@ -1,5 +1,4 @@
 import dev.slne.surf.api.gradle.util.registerRequired
-import net.minecrell.pluginyml.paper.PaperPluginDescription
 
 plugins {
     id("dev.slne.surf.api.gradle.paper-plugin")
@@ -14,4 +13,8 @@ surfPaperPluginApi {
     foliaSupported(true)
     generateLibraryLoader(false)
     authors.addAll("red")
+
+    serverDependencies {
+        registerRequired("surf-rabbitmq-paper")
+    }
 }

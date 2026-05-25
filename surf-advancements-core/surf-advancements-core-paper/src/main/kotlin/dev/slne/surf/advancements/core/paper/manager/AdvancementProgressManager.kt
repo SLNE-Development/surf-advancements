@@ -59,7 +59,6 @@ object AdvancementProgressManager {
     suspend fun fetchProgress(playerUuid: UUID) =
         PaperAdvancementInstance.rabbitApi.sendRequest(FetchAdvancementProgressPacket(playerUuid)).progresses
 
-
     fun queueProgress(progress: AdvancementProgress) = _progressQueue.add(progress)
 
 

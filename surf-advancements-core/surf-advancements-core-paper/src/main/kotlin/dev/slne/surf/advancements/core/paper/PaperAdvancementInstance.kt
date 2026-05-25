@@ -10,7 +10,6 @@ interface PaperAdvancementInstance : AdvancementInstance {
     override val rabbitApi: ClientRabbitMQApi get() = paperLoader.rabbitApi
     override val pluginScope: CoroutineScope get() = paperLoader.scope
 
-
     companion object :
         PaperAdvancementInstance by AdvancementInstance.INSTANCE as PaperAdvancementInstance {
         val INSTANCE get() = AdvancementInstance.INSTANCE

@@ -2,6 +2,7 @@ package dev.slne.surf.advancements.paper
 
 import com.github.shynixn.mccoroutine.folia.SuspendingJavaPlugin
 import com.github.shynixn.mccoroutine.folia.launch
+import com.github.shynixn.mccoroutine.folia.scope
 import dev.slne.surf.advancements.core.paper.PaperAdvancementInstance
 import dev.slne.surf.advancements.core.paper.manager.AdvancementManager
 import dev.slne.surf.advancements.core.paper.manager.AdvancementProgressManager
@@ -26,6 +27,8 @@ class PaperMain : SuspendingJavaPlugin() {
     }
 
     override suspend fun onEnableAsync() {
+        PaperAdvancementInstance.paperLoader.scope = this.scope
+
         AdvancementManager.create()
         AdvancementPlayerListener.register()
 
