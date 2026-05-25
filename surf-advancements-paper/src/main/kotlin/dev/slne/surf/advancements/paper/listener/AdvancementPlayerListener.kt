@@ -1,6 +1,7 @@
 package dev.slne.surf.advancements.paper.listener
 
 import com.github.shynixn.mccoroutine.folia.launch
+import dev.slne.surf.advancements.core.paper.manager.AdvancementManager
 import dev.slne.surf.advancements.core.paper.manager.AdvancementProgressManager
 import dev.slne.surf.advancements.paper.plugin
 import org.bukkit.event.EventHandler
@@ -12,8 +13,14 @@ object AdvancementPlayerListener : Listener {
     @EventHandler
     fun onJoin(event: PlayerJoinEvent) {
         plugin.launch {
-            AdvancementProgressManager.fetchProgress(event.player.uniqueId).forEach {
-                AdvancementProgressManager.cacheProgress(it)
+            AdvancementProgressManager.fetchProgress(event.player.uniqueId).forEach { progress ->
+                val advancement = AdvancementManager.getAdvancement(progress.advancementId)
+                val filledProgress = if (advancement != null) {
+                    progress.copy(requiredProgress = advancement.requiredProgress)
+                } else {
+                    progress
+                }
+                AdvancementProgressManager.cacheProgress(filledProgress)
             }
         }
     }

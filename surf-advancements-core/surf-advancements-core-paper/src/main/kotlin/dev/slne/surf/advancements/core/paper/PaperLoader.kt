@@ -6,9 +6,9 @@ import java.nio.file.Path
 
 class PaperLoader(
     dataPath: Path,
-    val scope: CoroutineScope
 ) {
     val rabbitApi = ClientRabbitMQApi.create("surf-advancements", dataPath)
+    lateinit var scope: CoroutineScope
 
     suspend fun onLoad() {
         rabbitApi.freezeAndConnect()

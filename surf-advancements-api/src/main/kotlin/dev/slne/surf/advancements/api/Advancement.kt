@@ -1,11 +1,14 @@
 package dev.slne.surf.advancements.api
 
-import net.kyori.adventure.key.Key
+import dev.slne.surf.advancements.api.rarity.AdvancementRarity
+import dev.slne.surf.api.core.serializer.adventure.component.SerializableComponent
+import dev.slne.surf.api.core.serializer.adventure.key.SerializableKey
 
 interface Advancement {
-    val id: Key
+    val id: SerializableKey
     val name: String
+    val rarity: AdvancementRarity
     val requiredProgress: Int
     val hidden: Boolean
-    val description: String
+    val description: SerializableComponent
 }
