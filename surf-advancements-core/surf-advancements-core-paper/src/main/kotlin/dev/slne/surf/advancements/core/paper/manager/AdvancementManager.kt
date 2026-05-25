@@ -3,6 +3,7 @@ package dev.slne.surf.advancements.core.paper.manager
 import dev.slne.surf.advancements.api.Advancement
 import dev.slne.surf.advancements.api.AdvancementCategory
 import dev.slne.surf.advancements.core.paper.PaperAdvancement
+import dev.slne.surf.advancements.core.paper.advancement.StarterCategory
 import dev.slne.surf.api.paper.event.register
 import io.ktor.util.collections.*
 import net.kyori.adventure.key.Key
@@ -31,8 +32,7 @@ object AdvancementManager {
         }
     }
 
-
     fun create() {
-        
+        registerCategory(StarterCategory)
     }
 }

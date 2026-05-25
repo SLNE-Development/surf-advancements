@@ -5,8 +5,12 @@ import com.github.shynixn.mccoroutine.folia.launch
 import dev.slne.surf.advancements.core.paper.PaperAdvancementInstance
 import dev.slne.surf.advancements.core.paper.manager.AdvancementManager
 import dev.slne.surf.advancements.core.paper.manager.AdvancementProgressManager
+import dev.slne.surf.advancements.paper.command.advancementCommand
 import dev.slne.surf.advancements.paper.listener.AdvancementPlayerListener
+import dev.slne.surf.advancements.paper.menu.advancementCategoryView
+import dev.slne.surf.advancements.paper.menu.advancementsView
 import dev.slne.surf.api.paper.event.register
+import dev.slne.surf.api.paper.inventory.framework.register
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.concurrent.TimeUnit
@@ -16,11 +20,16 @@ val plugin get() = JavaPlugin.getPlugin(PaperMain::class.java)
 class PaperMain : SuspendingJavaPlugin() {
     override suspend fun onLoadAsync() {
         PaperAdvancementInstance.paperLoader.onLoad()
+
+        advancementsView.register()
+        advancementCategoryView.register()
     }
 
     override suspend fun onEnableAsync() {
         AdvancementManager.create()
         AdvancementPlayerListener.register()
+
+        advancementCommand()
 
         Bukkit.getAsyncScheduler().runAtFixedRate(plugin, {
             plugin.launch {
