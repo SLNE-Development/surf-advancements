@@ -88,7 +88,7 @@ val advancementCategoryView: AbstractPaginatedSurfView = paginatedSurfView("adva
 
     onFirstRender {
         layoutSlot('X', viewIcon(ViewIconType.CROSS, ViewIconColor.RED) {
-            displayName { primary("Schliessen".toSmallCaps()) }
+            displayName { primary("Schließen".toSmallCaps()) }
         }).onItemClick { closeForPlayer() }
 
         layoutSlot('B', MenuHeads.ARROW_LEFT.apply {

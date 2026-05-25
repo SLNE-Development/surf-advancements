@@ -80,7 +80,7 @@ val advancementsView: AbstractPaginatedSurfView = paginatedSurfView("advancement
 
     onFirstRender {
         layoutSlot('X', viewIcon(ViewIconType.CROSS, ViewIconColor.RED) {
-            displayName { primary("Schliessen".toSmallCaps()) }
+            displayName { primary("Schließen".toSmallCaps()) }
         }).onItemClick { closeForPlayer() }
     }
 
