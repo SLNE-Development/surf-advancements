@@ -5,5 +5,6 @@ import net.kyori.adventure.key.Key
 
 interface AdvancementCategory {
     val id: Key
+    val name: String
     val members: ObjectList<Advancement>
 }
